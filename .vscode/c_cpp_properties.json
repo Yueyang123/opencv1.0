@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/include/cv",
+                "${workspaceFolder}/include/highgui",
+                "${workspaceFolder}/include/cxcore",
+                "${workspaceFolder}/include/cvaux",
+                "${workspaceFolder}/include/cvcam"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "E:\\QT\\QTCreater\\Tools\\mingw530_32\\bin\\gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
+

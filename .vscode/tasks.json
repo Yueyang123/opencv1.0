@@ -1,0 +1,37 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+           {
+            "label": "g++",
+            "type": "shell",
+            "command": "g++",
+            "args": [     "-g",  "${file}",  "-o",  "${file}.o",//这里添加动态链接库
+                        "-I","../include",
+                        "-I","../include/cv",
+                        "-I","../include/highgui",
+                        "-I","../include/cxcore",
+                        "-I","../include/cvaux",
+                        "-L", "../lib",
+                        "-l", "*.lib"
+                ],
+            "problemMatcher": {    
+                "owner": "cpp",      
+                "fileLocation": [      
+                    "relative",      
+                    "${workspaceRoot}"      
+                ],      
+                "pattern": {      
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",      
+                    "file": 1,      
+                    "line": 2,      
+                    "column": 3,      
+                    "severity": 4,      
+                    "message": 5      
+                }      
+            } 
+        }
+    ]
+}
+

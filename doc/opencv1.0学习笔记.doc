@@ -1,0 +1,279 @@
+(一)OpenCV包含的模块
+
+cv – 核心函数库
+
+cvaux – 辅助函数库
+
+cxcore – 数据结构与线性代数库
+
+highgui – GUI函数库
+
+ml – 机器学习函数库
+
+函数名:
+
+   cvActionTargetMod(...)
+
+   Action = 核心功能（core functionality） (e.g. set, create)
+
+   Target = 目标图像区域（target image area） (e.g. contour, polygon)
+
+   Mod    = （可选的）调整语（optional modifiers） (e.g. argument type)
+
+ 
+
+矩阵数据类型:
+
+   CV_<bit_depth>(S|U|F)C<number_of_channels>
+
+   S = 符号整型
+
+   U = 无符号整型
+
+   F = 浮点型
+
+   E.g.: CV_8UC1  是指一个8位无符号整型单通道矩阵,
+
+        CV_32FC2是指一个32位浮点型双通道矩阵.
+
+
+图像数据类型:
+
+   IPL_DEPTH_<bit_depth>(S|U|F)
+
+   E.g.: IPL_DEPTH_8U 图像像素数据是8位无符号整型.
+
+         IPL_DEPTH_32F图像像素数据是32位浮点型.
+
+
+OpenCv图像数据结构
+
+（1） IPL 图像:
+
+IplImage
+
+  |-- int  nChannels;     // 颜色通道数目 (1,2,3,4)
+
+  |-- int  depth;         // 像素的位深:
+
+  |                       //   IPL_DEPTH_8U, IPL_DEPTH_8S,
+
+  |                       //   IPL_DEPTH_16U,IPL_DEPTH_16S,
+
+  |                       //   IPL_DEPTH_32S,IPL_DEPTH_32F,
+
+  |                       //   IPL_DEPTH_64F
+
+  |-- int  width;         // 图像宽度（像素为单位）
+
+  |-- int  height;        // 图像高度
+
+  |-- char* imageData;    // 图像数据指针                （即指向存储图像像素值数组的指针，内容是这个数组的首地址）
+
+  |                       // 注意彩色图像按BGR顺序存储数据
+
+  |-- int  dataOrder;     // 0 - 将像素点不同通道的值交错排在一起，形成单一像素平面
+
+  |                       // 1 - 把所有像素同通道值排在一起，形成若干个通道平面，再把平面排列起来
+
+  |                       // cvCreateImage 只能创建像素交错排列式的图像
+
+  |-- int  origin;        // 0 – 像素原点为左上角,
+
+  |                       // 1 – 像素原点为左下角 (Windows bitmaps style)
+
+  |-- int  widthStep;     // 相邻行的同列点之间的字节数             （即图像每行所占的字节数，注意与每行所占的像素个数 width 区分）
+
+  |-- int  imageSize;     // 图像的大小（字节为单位） = height*widthStep
+
+  |-- struct _IplROI *roi;// 图像的感兴趣区域（ROI）. ROI非空时对图像的
+
+  |                       // 处理仅限于ROI区域.
+
+  |-- char *imageDataOrigin; // 图像数据未对齐时的数据原点指针
+
+  |                          // (需要正确地重新分配图像内存 )
+
+  |                          // （needed for correct image deallocation）
+
+  |-- int  align;         // 图像数据的行对齐: 4 or 8 byte alignment
+
+  |                       // OpenCV 中无此项，采用widthStep代替
+
+  |-- char colorModel[4]; // 颜色模型 – OpenCV中忽略此项
+
+
+矩阵与向量
+
+（1） 矩阵:
+
+CvMat                      // 2D 矩阵
+
+  |-- int   type;          // 元素类型 (uchar,short,int,float,double) 与标志
+
+  |-- int   step;          // 整行长度字节数
+
+  |-- int   rows, cols;    // 行、列数
+
+  |-- int   height, width; // 矩阵高度、宽度，与rows、cols对应
+
+  |-- union data;
+
+      |-- uchar*  ptr;     // data pointer for an unsigned char matrix
+
+      |-- short*  s;       // data pointer for a short matrix
+
+      |-- int*    i;       // data pointer for an integer matrix
+
+      |-- float*  fl;      // data pointer for a float matrix
+
+      |-- double* db;      // data pointer for a double matrix
+
+ 
+
+ 
+
+ 
+
+CvMatND                    // N-维矩阵
+
+  |-- int   type;          // 元素类型 (uchar,short,int,float,double) 与标志
+
+  |-- int   dims;          // 矩阵维数
+
+  |-- union data;
+
+  |   |-- uchar*  ptr;     // data pointer for an unsigned char 矩阵
+
+  |   |-- short*  s;       // data pointer for a short matrix
+
+  |   |-- int*    i;       // data pointer for an integer matrix
+
+  |   |-- float*  fl;      // data pointer for a float matrix
+
+  |   |-- double* db;      // data pointer for a double matrix
+
+  |
+
+  |-- struct dim[];        // 各维信息
+
+      |-- size;            // 元素数目
+
+      |-- step;            // 元素间距（字节为单位）
+
+ 
+
+ 
+
+CvSparseMat // N-维稀疏矩阵
+
+ 
+
+（2） 一般矩阵:
+
+CvArr*     // 仅作为函数定义的参数使用，
+
+           // 表明函数可以接受不同类型的矩阵作为参数，
+
+           // 例如：IplImage*, CvMat* 甚至是 CvSeq*.
+
+           // 矩阵的类型通过矩阵头的前4个字节信息来确定
+
+ 
+
+（3） 标量:
+
+CvScalar
+
+  |-- double val[4]; //4D 向量
+
+初始化函数:
+
+CvScalar s = cvScalar(double val0, double val1=0, double val2=0, double val3=0);
+
+// Example:
+
+CvScalar s = cvScalar(20.0);
+
+s.val[0]=20.0;
+
+注意该初始化函数的函数名与对应的结构体名称几乎同名，差别仅在于函数名第一个字母是小写的，而结构体名第一个字母是大写的。它并不是一个 C++ 构造函数。（译注：类似的还有 cvMat 与 CvMat、cvPoint 与 CvPoint 等等）
+
+ 
+
+3、其它结构类型
+
+（1） 点:
+
+CvPoint      p = cvPoint(int x, int y);
+
+CvPoint2D32f p = cvPoint2D32f(float x, float y);
+
+CvPoint3D32f p = cvPoint3D32f(float x, float y, float z);
+
+//E.g.:
+
+p.x=5.0;
+
+p.y=5.0;
+
+ 
+
+（2） 矩形框大小（以像素为精度）:
+
+CvSize       r = cvSize(int width, int height);
+
+CvSize2D32f  r = cvSize2D32f(float width, float height);
+
+ 
+
+（3） 矩形框的偏置和大小:
+
+CvRect       r = cvRect(int x, int y, int width, int height);
+
+ 
+
+GUI 指令
+
+1、窗口管理
+
+（1） 创建和定位一个新窗口:
+
+cvNamedWindow("win1", CV_WINDOW_AUTOSIZE);
+
+  cvMoveWindow("win1", 100, 100); // offset from the UL corner of the screen
+
+ 
+
+（2） 载入图像:
+
+IplImage* img=0;
+
+  img=cvLoadImage(fileName, CV_LOAD_IMAGE_COLOR);
+
+  if(!img) printf("Could not load image file: %s\n",fileName);
+
+ 
+
+（3） 显示图像:
+
+cvShowImage("win1",img);
+
+该函数可以在上面建立的窗口（win1）中显示彩色或灰度的字节型/浮点型图像。字节型图像像素值范围为[0-255]；浮点型图像像素值范围为[0-1]。彩色图像的三色元素按BGR（蓝-绿-红）顺序存储。
+
+ 
+
+（4） 关闭窗口:
+
+cvDestroyWindow("win1");
+
+ 
+
+（5） 改变窗口大小:
+
+cvResizeWindow("win1",100,100); // new width/heigh in pixels
+
+
+（三）OPENCV1.0基本图片操作函数
+
+
